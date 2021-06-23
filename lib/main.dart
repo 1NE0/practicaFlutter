@@ -10,10 +10,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Material App',
       home: home(),
-      routes: {
+      /* routes: {
         "/home": (context) => home(),
         "/second": (context) => SecondPage(),
-      },
+      }, */
     );
   }
 }
