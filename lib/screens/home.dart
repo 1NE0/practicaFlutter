@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/models/resultHttp.dart';
 import 'package:myapp/screens/second_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 int _index = 0;
 User usercito = User("", 2, 3);
@@ -27,6 +30,10 @@ class _homeState extends State<home> {
             tooltip: 'Show Snackbar',
             onPressed: () async {
               // LOGIC FOR BUTTON ADD
+
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return _persistencePage();
+              }));
             }),
         IconButton(
             icon: const Icon(Icons.whatshot),
@@ -47,6 +54,12 @@ class _homeState extends State<home> {
             })
       ]),
       drawer: Drawer(),
+      body: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile();
+        },
+      ),
     );
   }
 }
@@ -76,5 +89,62 @@ class _otherPageState extends State<otherPage> {
             )
           ],
         ));
+  }
+}
+
+/* persistence page */
+
+class _persistencePage extends StatefulWidget {
+  _persistencePage({Key? key}) : super(key: key);
+
+  @override
+  __persistencePageState createState() => __persistencePageState();
+}
+
+class __persistencePageState extends State<_persistencePage> {
+  final users = FirebaseFirestore.instance.collection('users').get();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Persistence"),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((doc) {
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      child: Text(doc.get('name').substring(0, 1)),
+                    ),
+                    title: Text(doc.get('name')),
+                    subtitle: Text(doc.get('job')),
+                  ),
+                );
+              }).toList(),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    getUsers();
+    super.initState();
+  }
+
+  void getUsers() async {
+    final users = await FirebaseFirestore.instance.collection('users').get();
+    for (var message in users.docs) {}
   }
 }
