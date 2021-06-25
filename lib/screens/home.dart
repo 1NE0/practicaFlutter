@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/models/resultHttp.dart';
@@ -134,6 +135,16 @@ class __persistencePageState extends State<_persistencePage> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // OPEN THE FORM
+          Navigator.push(context, MaterialPageRoute(builder: (_) {
+            return form();
+          }));
+        },
+        tooltip: 'Increment Counter',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -145,6 +156,91 @@ class __persistencePageState extends State<_persistencePage> {
 
   void getUsers() async {
     final users = await FirebaseFirestore.instance.collection('users').get();
-    for (var message in users.docs) {}
+  }
+}
+
+class form extends StatefulWidget {
+  form({Key? key}) : super(key: key);
+
+  @override
+  _formState createState() => _formState();
+}
+
+class _formState extends State<form> {
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController nameT = new TextEditingController();
+  TextEditingController jobT = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cree un nuevo user"),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            // Add TextFormFields and ElevatedButton here.
+            TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.person),
+                  hintText: 'Ingrese el nombre',
+                  labelText: 'Name:'),
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              controller: nameT,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.person),
+                  hintText: 'Ingrese el trabajo',
+                  labelText: 'Job:'),
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              controller: jobT,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false otherwise.
+                if (_formKey.currentState!.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("Enviando datos")));
+
+                  // SEND DATA
+                  _create(nameT.text, jobT.text);
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void _create(var name, var job) async {
+  final uid = FirebaseFirestore.instance.collection("users").doc().id;
+  try {
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'name': name,
+      'job': job,
+    });
+  } catch (e) {
+    print(e);
   }
 }
