@@ -31,7 +31,6 @@ class _homeState extends State<home> {
             tooltip: 'Show Snackbar',
             onPressed: () async {
               // LOGIC FOR BUTTON ADD
-
               Navigator.push(context, MaterialPageRoute(builder: (_) {
                 return _persistencePage();
               }));
@@ -128,6 +127,19 @@ class __persistencePageState extends State<_persistencePage> {
                     ),
                     title: Text(doc.get('name')),
                     subtitle: Text(doc.get('job')),
+                    onTap: () {
+                      // LOGIC TO EDIT
+                      // CREATE THE USER
+                      Userb usercito =
+                          new Userb(doc.id, doc.get('name'), doc.get('job'));
+                      print("/////////////////////////////////////////");
+                      print(usercito.name);
+                      print(usercito.id);
+                      print(usercito.job);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return _editUser(user4: usercito);
+                      }));
+                    },
                   ),
                 );
               }).toList(),
@@ -242,5 +254,108 @@ void _create(var name, var job) async {
     });
   } catch (e) {
     print(e);
+  }
+}
+
+void _edit(var id, var name, var job) async {
+  try {
+    await FirebaseFirestore.instance.collection('users').doc(id).set({
+      'name': name,
+      'job': job,
+    });
+  } catch (e) {
+    print(e);
+  }
+}
+
+class Userb {
+  final String id;
+  final String name;
+  final String job;
+
+  Userb(this.id, this.name, this.job);
+}
+
+/* EDIT USER */
+
+class _editUser extends StatefulWidget {
+  final Userb? user4;
+  _editUser({Key? key, @required Userb? this.user4}) : super(key: key);
+
+  @override
+  __editUserState createState() => __editUserState();
+}
+
+class __editUserState extends State<_editUser> {
+  final _formKey2 = GlobalKey<FormState>();
+  TextEditingController nameT = new TextEditingController();
+  TextEditingController jobT = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Informacion para editar"),
+      ),
+      body: Form(
+        key: _formKey2,
+        child: Column(
+          children: <Widget>[
+            // Add TextFormFields and ElevatedButton here.
+            TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.person),
+                  hintText: 'Ingrese el nombre',
+                  labelText: 'Name:'),
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              controller: nameT,
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                  icon: Icon(Icons.person),
+                  hintText: 'Ingrese el trabajo',
+                  labelText: 'Job:'),
+              // The validator receives the text that the user has entered.
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              controller: jobT,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, or false otherwise.
+                if (_formKey2.currentState!.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text("Enviando datos")));
+
+                  // SEND DATA
+                  _edit(widget.user4!.id, nameT.text, jobT.text);
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    nameT.text = widget.user4!.name;
+    jobT.text = widget.user4!.job;
+    super.initState();
   }
 }
