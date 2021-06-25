@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">966732026289-1cbf5s554oprg8ab5rr8jcbt1ihj1boo.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">966732026289</string>
+    <string name="google_api_key" translatable="false">AIzaSyDqCDNRtTd6LpjxOE9MBNhid0fZfvFDJio</string>
+    <string name="google_app_id" translatable="false">1:966732026289:android:b57ffebb64ecc1b8b3ad90</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDqCDNRtTd6LpjxOE9MBNhid0fZfvFDJio</string>
+    <string name="google_storage_bucket" translatable="false">practica-flutter-2226c.appspot.com</string>
+    <string name="project_id" translatable="false">practica-flutter-2226c</string>
+</resources>

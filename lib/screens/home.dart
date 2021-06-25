@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/models/resultHttp.dart';
 import 'package:myapp/screens/second_page.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -54,15 +55,17 @@ class _homeState extends State<home> {
             })
       ]),
       drawer: Drawer(),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile();
-        },
-      ),
     );
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 }
+
+/* ADS */
 
 /* second page */
 

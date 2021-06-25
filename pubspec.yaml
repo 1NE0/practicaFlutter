@@ -32,6 +32,7 @@ dependencies:
   http: ^0.13.3
   firebase_core:
   cloud_firestore:
+  google_mobile_ads: ^0.13.1
 
 dev_dependencies:
   flutter_test:
